@@ -1,0 +1,104 @@
+Views
+---------------------------------------------------------------------------
+- Splash Screen
+- Login
+- User
+	- Near By Deliveries
+	- Menu
+		- Categories
+		- Items
+		- Item
+		- View Order Bar
+			- View Order
+			- Checkout
+	- Track
+		- Status
+- Driver
+	- Orders
+		- Order
+
+
+
+
+Workflow (User)
+---------------------------------------------------------------------------
+- Home
+- Login ?? (now or optional at checkout)
+- List of Stores
+- Menu
+- Item
+- Checkout
+- Track 
+
+
+
+
+Workflow (Store)
+---------------------------------------------------------------------------
+- Home
+- Login
+- Menu
+
+
+
+
+
+Workflow (Driver)
+---------------------------------------------------------------------------
+- Home
+- Login
+- Orders
+- Track
+
+
+
+
+Routes
+---------------------------------------------------------------------------
+- /register -> Register user/driver
+- /login -> Login user
+- /search/orders  -> Get order info
+- /search/stores -> Get Store info
+- /store -> Create/Update store
+- /order -> Create/Update order
+- /user  -> Create/Update user
+
+
+
+
+
+
+
+Classes
+---------------------------------------------------------------------------
+User
+	- first name
+	- last name
+	- phone number
+	- location
+	- password
+
+Driver inherits User
+	- photo
+	- license plate
+
+Store
+	- Menu
+	- Driver(s)
+
+Menu
+	- Item(s)
+
+Item
+	- name
+	- price
+	- image
+
+Order
+	- Item(s)
+	- Store
+	- User
+	- status	
+
+
+
