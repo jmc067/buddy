@@ -2,6 +2,7 @@ var React = require('react');
 var ReactBootstrap = require('react-bootstrap');
 var LoaderAction = require('../../actions/LoaderAction.js');
 var LoaderStore = require('../../stores/LoaderStore.js');
+var Link = require('react-router').Link;
 
 var Carousel = React.createClass({
 	render: function(){
@@ -11,6 +12,20 @@ var Carousel = React.createClass({
 			        <h1 className="col-md-4">Buddy</h1>
 		      	<div className="col-md-4"/>
 		    </div>
+		);
+	}
+});
+
+var Dispensary = React.createClass({
+	render: function(){
+		var style = {
+			backgroundImage: 'url(' + this.props.dispensary["image"] + ')',
+		};				
+		var link = "/menu/" + this.props.dispensary["_id"];
+		return (
+			<Link to={link}>
+				<h1>{this.props.dispensary["name"]}</h1>
+			</Link>
 		);
 	}
 });
@@ -41,11 +56,8 @@ var Dispensaries = React.createClass({
 		if (this.state.loaded){
 			var dispensaries = LoaderStore.getDispensaries();
 			dispensaries = dispensaries["dispensaries"].map(function(dispensary,index){
-				var style = {
-					backgroundImage: 'url(' + dispensary["image"] + ')',
-				};				
 				return (
-					<h1 key={index} style={style}>{dispensary["name"]}</h1>
+					<Dispensary key={index} dispensary={dispensary}/>
 				)
 			});
 		} else {

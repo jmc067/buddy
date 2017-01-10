@@ -12,10 +12,12 @@ var Route = require('react-router').Route;
 
 // Require Sections
 var App = require('./components/App.js'); 
+var Menu = require('./components/Menu.js'); 
 
 var routes = (
   <Router history={browserHistory} >
     <Route path="/" component={App}></Route>
+    <Route path="/menu/:dispensary_id" component={Menu}></Route>
   </Router>
 ); 
 
