@@ -3,6 +3,7 @@ var request = require('superagent');
 var assign = require('object-assign'); 
 var Router = require('react-router');
 var EnvironmentConstants = require('../constants/EnvironmentConstants.js');
+var LoaderConstants = require('../constants/LoaderConstants.js');
 
 var _pendingRequests = {};
 
@@ -48,7 +49,10 @@ function handleResponse(actionTypes,filters){
                 console.log("500 error!");
                 break; 
               case 403:     // Forbidden 
-                console.log("403 error!");
+                console.log("403 error!  Forbidden!  Booting you...");
+                Dispatcher.dispatch({
+                    actionType: LoaderConstants.LOGOUT
+                });
                 break;
               default:      // 404,400,401
                 console.log("Not 200 status!");

@@ -7,6 +7,7 @@ var CHANGE_EVENT = 'change';
 
 var _dispensaries; 
 var _menu = {}; 
+var _session; 
 
 var LoaderStore = assign({}, EventEmitter.prototype, {
 
@@ -53,6 +54,54 @@ var LoaderStore = assign({}, EventEmitter.prototype, {
 		_menu = {}; 
 	},
 
+	login: function(data){
+		console.log(data);
+		localStorage.setItem("session_id", data["_id"]);        
+		this.setSession(data);
+	},
+
+	logout: function(){
+		this.clearSession();
+	},
+
+	isLoggedIn: function(){
+		var session_id = localStorage.getItem("session_id"); 
+
+		// If there is no access token, user is not logged in
+		if (session_id==undefined){
+			console.log("SessionStore.isLoggedIn: FALSE");
+			return false; 
+		} else { 
+			console.log("SessionStore.isLoggedIn: TRUE");
+			return true; 
+		}
+	},
+
+	sessionLoaded: function() {
+		console.log("checking loaded: ");
+		console.log(_session);
+		if (_session==undefined) {
+			return false; 	
+		} else {
+			return true; 
+		}
+	},
+
+	getSession: function(){
+		return _session; 
+	},
+
+	setSession: function(data){
+		console.log("setting session");
+		_session = data; 
+		console.log(_session);
+	},
+
+	clearSession: function(){
+		localStorage.removeItem("session_id");
+		_session = undefined; 
+	},
+
 	emitChange: function(){
 		this.emit(CHANGE_EVENT); 
 	},
@@ -80,6 +129,31 @@ AppDispatcher.register(function(action){
 		LoaderStore.setMenu(action.response); 
         LoaderStore.emitChange();
         break;
+
+      case LoaderConstants.LOGIN_SUCCESS:
+		console.log("LoaderStore received LOGIN_SUCCESS");
+		LoaderStore.login(action.response.session); 
+        LoaderStore.emitChange();
+        break;
+
+      case LoaderConstants.LOGOUT:
+		console.log("LoaderStore received LOGOUT");
+		LoaderStore.logout(action.response); 
+        LoaderStore.emitChange();
+        break;
+
+	  case LoaderConstants.LOAD_SESSION_SUCCESS:
+		console.log("LoaderStore received LOAD_SESSION_SUCCESS");
+		LoaderStore.login(action.response.session); 
+        LoaderStore.emitChange();
+        break;
+
+	  case SessionConstants.LOAD_SESSION_FAIL:
+		console.log("SessionStore received LOAD_SESSION_FAIL"); 
+		SessionStore.logout(); 
+		SessionStore.emitChange();
+		break;
+
 
       default:
         break;
