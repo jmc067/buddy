@@ -56,7 +56,7 @@ var routes = (
 
 		<Route path="/" component={LoggedIn} onEnter={authenticatedRedirect} >
 			<Route path="admin" component={AdminLayout} >
-				<Route path="admin/:dispensary_id" component={Menu}/>
+				<Route path="menu" component={Menu}/>
 			</Route>
 
 			<Route path="driver" component={DriverLayout} >
