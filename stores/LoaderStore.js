@@ -102,6 +102,39 @@ var LoaderStore = assign({}, EventEmitter.prototype, {
 		_session = undefined; 
 	},
 
+	addToCart: function(cartItem){
+		var cart = this.getCart();
+		cart.push(cartItem);
+		localStorage.setItem("cart", JSON.stringify(cart));        
+		console.log(this.getCart());
+	},
+
+	removeFromCart: function(cartItem){
+		var cart = this.getCart();
+
+		// filter out cartItem
+		var filteredCart = cart.filter(function(item){
+			item["code"]!=cartItem["code"];
+		});
+		localStorage.setItem("cart", JSON.stringify(filteredCart));        
+		console.log(this.getCart());
+	},
+
+	getCart: function(){
+		var cart = localStorage.getItem("cart");
+		if (cart){
+			cart = JSON.parse(cart);
+		} else {
+			cart = [];
+			localStorage.setItem("cart", JSON.stringify(cart));        
+		}
+		return cart;
+	},
+
+	clearCart: function(){
+		localStorage.removeItem("cart");
+	},
+
 	emitChange: function(){
 		this.emit(CHANGE_EVENT); 
 	},
@@ -160,6 +193,19 @@ AppDispatcher.register(function(action){
 		LoaderStore.clearMenu(); 
 		LoaderStore.emitChange();
 		break;
+
+	  case LoaderConstants.ADD_TO_CART:
+		console.log("LoaderStore received ADD_TO_CART"); 
+		LoaderStore.addToCart(action.cartItem); 
+		LoaderStore.emitChange();
+		break;
+
+	  case LoaderConstants.REMOVE_FROM_CART:
+		console.log("LoaderStore received REMOVE_FROM_CART"); 
+		LoaderStore.removeFromCart(action.cartItem); 
+		LoaderStore.emitChange();
+		break;
+
 
       default:
         break;

@@ -96,6 +96,7 @@ var LoaderAction =  {
         var query = menu_item;
         Api.triggerPostRequest(actionTypes,url,query);
     },
+
     createMenuItem: function(dispensary_id, menu_item){
         var actionTypes = {
             "request_action" : LoaderConstants.CREATE_MENU_ITEM_START,
@@ -107,6 +108,20 @@ var LoaderAction =  {
         var query = menu_item;
         Api.triggerPostRequest(actionTypes,url,query);
     },
+
+    addToCart: function(cart_item){
+        Dispatcher.dispatch({
+            actionType: LoaderConstants.ADD_TO_CART,
+            cartItem: cart_item
+        });
+    },
+
+    removeFromCart: function(cart_item){
+        Dispatcher.dispatch({
+            actionType: LoaderConstants.REMOVE_FROM_CART,
+            cartItem: cart_item
+        });
+    }
 
 }
 
