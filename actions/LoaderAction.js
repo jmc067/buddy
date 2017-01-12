@@ -86,8 +86,6 @@ var LoaderAction =  {
     },
 
     updateMenuItem: function(dispensary_id, menu_item){
-        console.log(dispensary_id);
-        console.log(menu_item);
         var actionTypes = {
             "request_action" : LoaderConstants.UPDATE_MENU_ITEM_START,
             "success_action" : LoaderConstants.UPDATE_MENU_ITEM_SUCCESS,
@@ -97,7 +95,18 @@ var LoaderAction =  {
         var url = Api.requestUrl(url_path);
         var query = menu_item;
         Api.triggerPostRequest(actionTypes,url,query);
-    }   
+    },
+    createMenuItem: function(dispensary_id, menu_item){
+        var actionTypes = {
+            "request_action" : LoaderConstants.CREATE_MENU_ITEM_START,
+            "success_action" : LoaderConstants.CREATE_MENU_ITEM_SUCCESS,
+            "failure_action" : LoaderConstants.CREATE_MENU_ITEM_FAIL
+        };
+        var url_path = "/menu/" + dispensary_id;
+        var url = Api.requestUrl(url_path);
+        var query = menu_item;
+        Api.triggerPostRequest(actionTypes,url,query);
+    },
 
 }
 

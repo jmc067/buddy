@@ -155,7 +155,8 @@ AppDispatcher.register(function(action){
 		break;
 
 	  case LoaderConstants.UPDATE_MENU_ITEM_SUCCESS:
-		console.log("LoaderStore received UPDATE_MENU_ITEM_SUCCESS"); 
+	  case LoaderConstants.CREATE_MENU_ITEM_SUCCESS:
+		console.log("LoaderStore received ",action.actionType); 
 		LoaderStore.clearMenu(); 
 		LoaderStore.emitChange();
 		break;
