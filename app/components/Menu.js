@@ -311,7 +311,7 @@ var MenuItem = React.createClass({
 		return (
 			<div>
 				<hr/>
-				<h1>{this.props.menu_item["name"]}</h1>
+				<h4>{this.props.menu_item["name"]}</h4>
 				{edit}
 				<hr/>
 			</div>
@@ -319,8 +319,21 @@ var MenuItem = React.createClass({
 	}
 });
 
+var MenuCategory = React.createClass({
+	render: function(){
+		var menu_items = this.props.menu_items.map(function(menu_item,index){
+			return (<MenuItem key={index} dispensary_id={this.props.dispensary_id} menu_item={menu_item} session={this.props.session}/>);
+		}.bind(this));
+		return (
+			<div>
+				<h1>{this.props.category_name}</h1>
+				{menu_items}	
+			</div>
+		);
+	}
+});
 
-var MenuItems = React.createClass({
+var MenuCategories = React.createClass({
 	getInitialState: function(){
 		return {
 			"loaded":LoaderStore.menuLoaded(this.props.dispensary_id)
@@ -348,7 +361,9 @@ var MenuItems = React.createClass({
 	},
 	render: function(){
 		if (this.state.loaded){
+			// get items
 			var items = LoaderStore.getMenu(this.props.dispensary_id);
+
 			// convert to {category:[item,item]} format
 			var formatted_menu = {};
 			for (var index=0; index<items.length; index++){
@@ -360,20 +375,28 @@ var MenuItems = React.createClass({
 					formatted_menu[item["category"]].push(item);
 				}
 			}
-			console.log(formatted_menu);
-			items = items.map(function(menu_item,index){
+
+			// get full category list
+			var category_list = [];
+			for (var category_name in formatted_menu){
+				category_list.push(category_name);
+			}
+
+			// create menu categories
+			categories = category_list.map(function(category_name,index){
+				var menu_items = formatted_menu[category_name];
 				return (
-					<MenuItem key={index} dispensary_id={this.props.dispensary_id} menu_item={menu_item} session={this.props.session}/>
+					<MenuCategory key={index} dispensary_id={this.props.dispensary_id} category_name={category_name} menu_items={menu_items} session={this.props.session}/>
 				)
 			}.bind(this));
 		} else {
-		    var items = (<h1>Grabbing menu...</h1>);
+		    var categories = (<h1>Grabbing menu...</h1>);
 		}
 		return (
 			<div className="row">
 		      	<div className="col-md-4"/>
 		      	<div className="col-md-4">
-		      		{items}
+		      		{categories}
 		      	</div>
 		      	<div className="col-md-4"/>
 		    </div>
@@ -391,7 +414,7 @@ var Menu = React.createClass({
 	}
     return (
       <div className="menu container-fluid">
-      	<MenuItems dispensary_id={dispensary_id} session={session}/>
+      	<MenuCategories dispensary_id={dispensary_id} session={session}/>
       	{add_menu_item}
       </div>
     );
