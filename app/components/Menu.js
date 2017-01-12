@@ -349,13 +349,25 @@ var MenuItems = React.createClass({
 	render: function(){
 		if (this.state.loaded){
 			var items = LoaderStore.getMenu(this.props.dispensary_id);
+			// convert to {category:[item,item]} format
+			var formatted_menu = {};
+			for (var index=0; index<items.length; index++){
+				var item = items[index];
+				if (formatted_menu[item["category"]]!=undefined){
+					formatted_menu[item["category"]].push(item);
+				} else {
+					formatted_menu[item["category"]]=[];
+					formatted_menu[item["category"]].push(item);
+				}
+			}
+			console.log(formatted_menu);
 			items = items.map(function(menu_item,index){
 				return (
 					<MenuItem key={index} dispensary_id={this.props.dispensary_id} menu_item={menu_item} session={this.props.session}/>
 				)
 			}.bind(this));
 		} else {
-		    var items = (<h1>Grabbing menu</h1>);
+		    var items = (<h1>Grabbing menu...</h1>);
 		}
 		return (
 			<div className="row">
