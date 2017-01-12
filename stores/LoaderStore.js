@@ -69,10 +69,10 @@ var LoaderStore = assign({}, EventEmitter.prototype, {
 
 		// If there is no access token, user is not logged in
 		if (session_id==undefined){
-			console.log("SessionStore.isLoggedIn: FALSE");
+			console.log("LoaderStore.isLoggedIn: FALSE");
 			return false; 
 		} else { 
-			console.log("SessionStore.isLoggedIn: TRUE");
+			console.log("LoaderStore.isLoggedIn: TRUE");
 			return true; 
 		}
 	},
@@ -148,12 +148,17 @@ AppDispatcher.register(function(action){
         LoaderStore.emitChange();
         break;
 
-	  case SessionConstants.LOAD_SESSION_FAIL:
-		console.log("SessionStore received LOAD_SESSION_FAIL"); 
-		SessionStore.logout(); 
-		SessionStore.emitChange();
+	  case LoaderConstants.LOAD_SESSION_FAIL:
+		console.log("LoaderStore received LOAD_SESSION_FAIL"); 
+		LoaderStore.logout(); 
+		LoaderStore.emitChange();
 		break;
 
+	  case LoaderConstants.UPDATE_MENU_ITEM_SUCCESS:
+		console.log("LoaderStore received UPDATE_MENU_ITEM_SUCCESS"); 
+		LoaderStore.clearMenu(); 
+		LoaderStore.emitChange();
+		break;
 
       default:
         break;

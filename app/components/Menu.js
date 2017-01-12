@@ -41,7 +41,7 @@ var EditItem = React.createClass({
 
   submit: function(){
   	console.log("pretendign to submit");
-  	// LoaderAction.updateMenuItem(this.state);
+  	LoaderAction.updateMenuItem(this.props.dispensary_id, this.state);
   	this.close();
   },
 
@@ -52,8 +52,6 @@ var EditItem = React.createClass({
   },
 
   render: function() {
-  	console.log("menu_item");
-  	console.log(this.props.menu_item);
   	var menu_item = this.props.menu_item;
     return (
       <div>
@@ -74,6 +72,7 @@ var EditItem = React.createClass({
 			<label>
 	          Category:
 	          <select value={this.state.category} onChange={this.handleChange.bind(this,"category")}>
+	            <option value="">Other</option>
 	            <option value="Flower">Flower</option>
 	            <option value="Preroll">Preroll</option>
 	            <option value="Edibles">Edibles</option>
@@ -86,6 +85,7 @@ var EditItem = React.createClass({
 			<label>
 	          Type:
 	          <select value={this.state.type} onChange={this.handleChange.bind(this,"type")}>
+	            <option value="">Other</option>
 	            <option value="Sativa">Sativa</option>
 	            <option value="Indica">Indica</option>
 	            <option value="Hybrid">Hybrid</option>
@@ -114,7 +114,7 @@ var EditItem = React.createClass({
 	        <br/>
 			<label>
 				Gram Price:
-				<input type="text" placeholder="Gram Price" value={this.state.gram_price} onChange={this.handleChange.bind(this,"Gram Price")}/>
+				<input type="text" placeholder="Gram Price" value={this.state.gram_price} onChange={this.handleChange.bind(this,"gram_price")}/>
 			</label>
 			<br/>
 			<label>
@@ -153,7 +153,7 @@ var MenuItem = React.createClass({
 	render: function(){
 		var edit;
 		if (this.props.session && this.props.session.type=="admin"){
-			edit = (<EditItem menu_item={this.props.menu_item}/>);
+			edit = (<EditItem dispensary_id={this.props.dispensary_id} menu_item={this.props.menu_item}/>);
 		}
 		return (
 			<div>
@@ -179,6 +179,10 @@ var MenuItems = React.createClass({
 			this.setState({"loaded":loaded});
 		}
 	},
+	componentWillUpdate: function(){
+    	LoaderAction.loadMenu(this.props.dispensary_id); 
+    	LoaderAction.extendSession();
+	},
 	componentWillMount: function(){
 		LoaderAction.loadMenu(this.props.dispensary_id);
 	},
@@ -194,7 +198,7 @@ var MenuItems = React.createClass({
 			var items = LoaderStore.getMenu(this.props.dispensary_id);
 			items = items.map(function(menu_item,index){
 				return (
-					<MenuItem key={index} menu_item={menu_item} session={this.props.session}/>
+					<MenuItem key={index} dispensary_id={this.props.dispensary_id} menu_item={menu_item} session={this.props.session}/>
 				)
 			}.bind(this));
 		} else {
