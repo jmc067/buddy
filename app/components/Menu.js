@@ -203,9 +203,9 @@ var EditItem = React.createClass({
   	var menu_item = this.props.menu_item;
     return (
       <div>
-        <div onClick={this.open} >
+        <Button onClick={this.open} >
           Edit
-        </div>
+        </Button>
 
         <Modal show={this.state.showModal} onHide={this.close}>
           <Modal.Header closeButton>
@@ -303,17 +303,45 @@ var EditItem = React.createClass({
 
 
 var MenuItem = React.createClass({
+	getInitialState: function() {
+		return { showModal: false };
+	},
+
+	close: function() {
+		this.setState({ showModal: false });
+	},
+
+	open: function() {
+		this.setState({ showModal: true });
+	},
 	render: function(){
 		var edit;
 		if (this.props.session && this.props.session.type=="admin"){
 			edit = (<EditItem dispensary_id={this.props.dispensary_id} menu_item={this.props.menu_item}/>);
 		}
+		var menu_item = this.props.menu_item;
 		return (
 			<div>
-				<hr/>
-				<h4>{this.props.menu_item["name"]}</h4>
-				{edit}
-				<hr/>
+				<div onClick={this.open}>		
+					<hr/>
+					<h4>{menu_item["name"]}</h4>
+					{edit}
+					<hr/>
+			    </div>
+
+				<Modal show={this.state.showModal} onHide={this.close}>
+		          <Modal.Header closeButton>
+		            <Modal.Title>{menu_item["name"]}</Modal.Title>
+		          </Modal.Header>
+		          <Modal.Body>
+		            <h4>{menu_item["category"]}</h4>
+		            <p>{menu_item["description"]}</p>
+
+		          </Modal.Body>
+		          <Modal.Footer>
+		            <Button onClick={this.close}>Close</Button>
+		          </Modal.Footer>
+		        </Modal>		    
 			</div>
 		);
 	}
