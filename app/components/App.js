@@ -43,6 +43,22 @@ var TopNav = React.createClass({
 	}
 });
 
+var CartItem = React.createClass({
+	render: function(){
+		var item = this.props.item;
+		console.log(item);
+		var string = String(item["quantity"]) + " x " + String(item["value"]) +  " = " + String(item["value"]*item["quantity"]);
+		return (
+			<div>
+				<div>{item["name"]}</div>
+				<div>$ {item["value"]}</div>
+				<div>{string}</div>
+				<hr/>
+			</div>
+		);
+	}
+});
+
 var Cart = React.createClass({
 	getInitialState: function(){
 		return {
@@ -86,9 +102,8 @@ var Cart = React.createClass({
 		}
 		if (this.state.cart.length>0){
 			var cartItems = this.state.cart.map(function(item,index){
-				var string = item["name"] + " x " + String(item["quantity"]) + " = " + String(item["value"]*item["quantity"]);
 				return (
-					<div key={index} >{string}</div>
+					<CartItem key={index} item={item} />
 				);
 			}.bind(this));
 			return (
@@ -128,4 +143,3 @@ var App = React.createClass({
 });
 
 module.exports = App;
-
