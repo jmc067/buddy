@@ -112,6 +112,9 @@ var LoaderStore = assign({}, EventEmitter.prototype, {
 	},
 
 	addToCart: function(cartItem){
+		// remove item if it exists already
+		this.removeFromCart(cartItem);
+		// add item back in
 		var cart = this.getCart();
 		cart.push(cartItem);
 		localStorage.setItem("cart", JSON.stringify(cart));        
@@ -140,6 +143,16 @@ var LoaderStore = assign({}, EventEmitter.prototype, {
 			localStorage.setItem("cart", JSON.stringify(cart));        
 		}
 		return cart;
+	},
+
+	getCartItem: function(itemCode){
+		var cart = this.getCart();
+
+		// filter out cartItem
+		var filteredCart = cart.filter(function(item){
+			return item["code"]==itemCode;
+		});
+		return filteredCart[0];
 	},
 
 	clearCart: function(){

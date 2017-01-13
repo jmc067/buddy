@@ -11,11 +11,18 @@ var EditItem = AdminButtons.EditItem;
 
 var MenuItem = React.createClass({
 	getInitialState: function() {
-		return { 
-			showModal: false,
-			selectedOption: "",
-			quantity: 0
-		};
+		var state = { showModal: false };
+		var cartItem = LoaderStore.getCartItem(this.props.menu_item["code"]);
+
+		// if item in cart, lets get the selection and quantity
+		if (cartItem){
+			state.selectedOption = cartItem["key"];
+			state.quantity = cartItem["quantity"];
+		} else {
+			state.selectedOption = "";
+			state.quantity = 0;
+		}
+		return state;
 	},
 
 	close: function() {
@@ -107,6 +114,40 @@ var MenuItem = React.createClass({
 			);
 		}.bind(this));
 
+		// determine cart options
+		var add_to_cart_button;
+		var edit_cart_button;
+		var remove_from_cart_button;
+		var cartItem = LoaderStore.getCartItem(menu_item["code"]);
+		console.log(cartItem);
+		// if in cart already
+		if (cartItem){
+			console.log(cartItem);
+			console.log(this.state);
+			// if EXACTLY the same as in the cart, give option to remove
+			if (cartItem["quantity"]==this.state.quantity && cartItem["key"]==this.state.selectedOption){
+				var remove_from_cart_button = (
+		            <Button onClick={this.remove_from_cart.bind(this,menu_item)}>Remove From Cart</Button>
+				);
+			} else {
+				var edit_cart_button = (
+					<Button onClick={this.add_to_cart.bind(this,menu_item)}>Update Cart</Button>           	 
+				);
+			}
+		} else {
+			var add_to_cart_button = (
+				<Button onClick={this.add_to_cart.bind(this,menu_item)}>Add To Cart</Button>           	 
+			);
+		}
+
+		var cart_options = (
+			<div>
+				{add_to_cart_button}
+				{edit_cart_button}
+				{remove_from_cart_button}		
+	        </div>
+		);		
+
 		return (
 			<div>
 				<div onClick={this.open}>		
@@ -134,8 +175,7 @@ var MenuItem = React.createClass({
 			        </Button>					
 		          </Modal.Body>
 		          <Modal.Footer>
-		            <Button onClick={this.add_to_cart.bind(this,menu_item)}>Add To Cart</Button>
-		            <Button onClick={this.remove_from_cart.bind(this,menu_item)}>Remove From Cart</Button>
+		          	{cart_options}
 		          </Modal.Footer>
 		        </Modal>		    
 			</div>

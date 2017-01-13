@@ -85,10 +85,10 @@ var Cart = React.createClass({
 			backgroundColor: "#D3FFCE"
 		}
 		if (this.state.cart.length>0){
-			var cartItems = this.state.cart.map(function(item){
+			var cartItems = this.state.cart.map(function(item,index){
 				var string = item["name"] + " x " + String(item["quantity"]) + " = " + String(item["value"]*item["quantity"]);
 				return (
-					<div>{string}</div>
+					<div key={index} >{string}</div>
 				);
 			}.bind(this));
 			return (
