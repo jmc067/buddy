@@ -41,13 +41,22 @@ var LoaderStore = assign({}, EventEmitter.prototype, {
 
 	getMenu: function(dispensary_id){
 		dispensary_id = String(dispensary_id);
-		return _menu[dispensary_id]; 
+		return _menu[dispensary_id]["menu_items"]; 
+	},
+
+	getItemPriceLog: function(dispensary_id){
+		dispensary_id = String(dispensary_id);
+		return _menu[dispensary_id]["item_price_log"]; 
 	},
 
 	setMenu: function(data){
 		var dispensary_id = String(data.dispensary_id);
 		var menu_items = data.menu_items;
-		_menu[dispensary_id] = menu_items; 
+		var item_price_log = data.item_price_log;
+		_menu[dispensary_id] = {
+			"menu_items": menu_items,
+			"item_price_log": item_price_log
+		}; 
 	},
 
 	clearMenu: function(){
@@ -110,12 +119,14 @@ var LoaderStore = assign({}, EventEmitter.prototype, {
 	},
 
 	removeFromCart: function(cartItem){
+
 		var cart = this.getCart();
 
 		// filter out cartItem
 		var filteredCart = cart.filter(function(item){
-			item["code"]!=cartItem["code"];
+			return item["code"]!=cartItem["code"];
 		});
+		
 		localStorage.setItem("cart", JSON.stringify(filteredCart));        
 		console.log(this.getCart());
 	},

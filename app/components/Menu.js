@@ -12,7 +12,9 @@ var EditItem = AdminButtons.EditItem;
 var MenuItem = React.createClass({
 	getInitialState: function() {
 		return { 
-			showModal: false
+			showModal: false,
+			selectedOption: "",
+			quantity: 0
 		};
 	},
 
@@ -28,18 +30,83 @@ var MenuItem = React.createClass({
 		this.setState(state);
 	},
 	add_to_cart: function(cartItem){
-		LoaderAction.addToCart(cartItem);
-		// this.close();
+		var item_price_log = LoaderStore.getItemPriceLog(this.props.dispensary_id);
+		if (this.state.selectedOption && this.state.quantity>0){
+			var cartItem = {
+				"name":cartItem["name"],
+				"code":cartItem["code"],
+				"dispensary_id":this.props.dispensary_id,
+				"quantity":this.state.quantity,
+				"nickname": item_price_log[this.state.selectedOption]["nickname"],
+				"value": this.props.menu_item[this.state.selectedOption],
+				"key": this.state.selectedOption
+			}
+			LoaderAction.addToCart(cartItem);
+		}
+		this.close();
 	},
 	remove_from_cart: function(cartItem){
 		LoaderAction.removeFromCart(cartItem);
+		this.close();
+	},
+	incrementQuantity: function(){
+		var state = this.state;
+		state.quantity += 1;
+		this.setState(state);
+	},
+	decrementQuantity: function(){
+		if ( this.state.quantity>0 ){
+			var state = this.state;
+			state.quantity -= 1;
+			this.setState(state);
+		}
+	},
+	updateSelection: function(priceOptionKey){
+		var state = this.state;
+		state.selectedOption = priceOptionKey;
+		this.setState(state);
 	},
 	render: function(){
 		var edit;
 		if (this.props.session && this.props.session.type=="admin"){
 			edit = (<EditItem dispensary_id={this.props.dispensary_id} menu_item={this.props.menu_item}/>);
 		}
+		var item_price_log = LoaderStore.getItemPriceLog(this.props.dispensary_id);
 		var menu_item = this.props.menu_item;
+
+		// find all price options
+		var price_options = [];
+
+		// for each option in menu_item
+		for (var option in menu_item){
+			// if it exists
+			if (menu_item[option]) {
+				// if ends in "price", then its a price option.  Let's include it
+				if (option.slice(-5)=="price"){
+					// add price option
+					price_options.push({
+						"nickname": item_price_log[option]["nickname"],
+						"value": menu_item[option],
+						"key": option
+					});
+				}
+			} 		
+		}
+
+		// Populate price options component
+		var item_selection = price_options.map(function(price_option,index){
+			var price = "$" + price_option["value"] + " " +  price_option["nickname"];
+			var btn_class = ""
+			if (price_option["key"]==this.state.selectedOption){
+				var btn_class = "btn btn-success";
+			} 
+			return (
+		        <Button className={btn_class} key={index} onClick={this.updateSelection.bind(this,price_option["key"])}>
+		          {price}
+		        </Button>
+			);
+		}.bind(this));
+
 		return (
 			<div>
 				<div onClick={this.open}>		
@@ -57,7 +124,14 @@ var MenuItem = React.createClass({
 		            <h4>{menu_item["name"]}</h4>
 		            <h4>{menu_item["category"]}</h4>
 		            <p>{menu_item["description"]}</p>
-
+		            {item_selection}
+			        <Button onClick={this.decrementQuantity}>
+			          -
+			        </Button>					
+			        <p>Qty: {this.state.quantity}</p>
+			        <Button onClick={this.incrementQuantity}>
+			          +
+			        </Button>					
 		          </Modal.Body>
 		          <Modal.Footer>
 		            <Button onClick={this.add_to_cart.bind(this,menu_item)}>Add To Cart</Button>

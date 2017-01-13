@@ -13,7 +13,6 @@ var AddItem = React.createClass({
     	showModal: false,
     };
 	state.name = menu_item.name || ""
-	state.code = menu_item.code || ""
 	state.category = menu_item.category || ""
 	state.type = menu_item.type || ""
 	state.thc_percent = menu_item.thc_percent || ""

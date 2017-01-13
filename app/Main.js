@@ -27,8 +27,6 @@ var LoggedOut = require('./components/LoggedOut.js');
 var AdminLayout = require('./components/AdminLayout.js'); 
 var DriverLayout = require('./components/DriverLayout.js'); 
 
-
-
 // Used to preserve attempted path while still enforcing login
 function authenticatedRedirect(nextState, replace) {
   console.log('App.authenticatedRedirect');
