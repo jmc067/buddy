@@ -1,5 +1,7 @@
 var React = require('react');
 var ReactBootstrap = require('react-bootstrap');
+var Button = ReactBootstrap.Button;
+var Modal = ReactBootstrap.Modal;
 var LoaderAction = require('../../actions/LoaderAction.js');
 var LoaderStore = require('../../stores/LoaderStore.js');
 var Link = require('react-router').Link;
@@ -44,8 +46,21 @@ var TopNav = React.createClass({
 var Cart = React.createClass({
 	getInitialState: function(){
 		return {
+    		"showModal": false,
 			"cart": LoaderStore.getCart()
 		}
+	},
+
+	close: function() {
+		var state = this.state;
+		state.showModal = false;
+		this.setState(state);
+	},
+
+	open: function() {
+		var state = this.state;
+		state.showModal = true;
+		this.setState(state);
 	},
 
 	updateState: function(){
@@ -54,7 +69,6 @@ var Cart = React.createClass({
 			var state = this.state;
 			state.cart = cart;
 			this.setState(state);
-			console.log("didn't match.  updating cart!!!!!!!!!");
 		}
 	},
 
@@ -65,16 +79,36 @@ var Cart = React.createClass({
 	componentWillUnmount: function(){
 		LoaderStore.removeChangeListener(this.updateState); 
 	},
-	
+
 	render: function(){
 		var style = {
 			backgroundColor: "#D3FFCE"
 		}
-		console.log(this.state.cart);
 		if (this.state.cart.length>0){
+			var cartItems = this.state.cart.map(function(item){
+				var string = item["name"] + " x " + String(item["quantity"]) + " = " + String(item["value"]*item["quantity"]);
+				return (
+					<div>{string}</div>
+				);
+			}.bind(this));
 			return (
-				<div style={style}>Cart</div>
-			);
+		      <div>
+		        <div style={style} onClick={this.open} >
+		          <span className="glyphicon glyphicon-shopping-cart"/>
+		        </div>
+
+		        <Modal show={this.state.showModal} onHide={this.close}>
+		          <Modal.Header closeButton>
+		            <Modal.Title>Your Cart</Modal.Title>
+		          </Modal.Header>
+		          <Modal.Body>
+		          	{cartItems}
+		          </Modal.Body>
+		          <Modal.Footer>
+		          </Modal.Footer>
+		        </Modal>
+		      </div>			
+		    );
 		} else {
 			return null;
 		}
@@ -94,5 +128,4 @@ var App = React.createClass({
 });
 
 module.exports = App;
-
 
